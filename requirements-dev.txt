@@ -1,0 +1,5 @@
+-r requirements.txt
+pytest==9.1.1
+# httpx precisa ficar <0.28: versões novas removeram o shortcut `app=` que o
+# TestClient do Starlette 0.27 (pinado pelo fastapi==0.104.1) ainda usa.
+httpx==0.27.2

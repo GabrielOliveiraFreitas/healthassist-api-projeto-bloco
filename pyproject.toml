@@ -11,4 +11,12 @@ dependencies = [
     "python-multipart==0.0.6",
     "pyjwt==2.8.0",
     "python-dotenv==1.0.0",
+    "sqlmodel>=0.0.30",
+    "slowapi>=0.1.10",
+]
+
+[dependency-groups]
+dev = [
+    "httpx<0.28",
+    "pytest>=9.1.1",
 ]
