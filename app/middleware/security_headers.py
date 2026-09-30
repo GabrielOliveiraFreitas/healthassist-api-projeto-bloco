@@ -26,6 +26,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["Referrer-Policy"] = "no-referrer"
+        response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
         is_docs = request.url.path.startswith(_DOCS_PATHS)
         response.headers["Content-Security-Policy"] = _DOCS_CSP if is_docs else _API_CSP
 
