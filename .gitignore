@@ -14,3 +14,5 @@ wheels/
 
 # Banco de dados local (SQLite)
 *.db
+zap-out/
+.coverage

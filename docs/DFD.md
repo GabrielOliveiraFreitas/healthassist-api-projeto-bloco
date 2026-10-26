@@ -108,3 +108,18 @@ Somente o `jwt_handler.py` acessa esse segredo.
 - Rate limiting e circuit breaker ainda não implementados; `/predict` e
   `/auth/token` são os alvos prioritários (autenticação por força bruta e
   abuso da rota protegida).
+
+## Atualização (TP2/TP3): zona de dados implementada
+
+Desde o TP2 a API persiste dados em um banco SQLite via SQLModel, o que
+adiciona uma **trust boundary 3 (API ↔ banco)** ao diagrama acima:
+
+- Tabela `User`: `username` + hash scrypt da senha. Confidencialidade e
+  integridade **altas** (comprometimento = tomada de contas). Sem senha em
+  texto puro e sem credenciais no código.
+- Tabela `Triagem`: sintomas e resultado, vinculados ao `owner`. Dado de saúde
+  (LGPD), confidencialidade **alta**; isolamento por usuário garantido pela
+  query (`id` **e** `owner`), com 404 uniforme (BOLA).
+- Acesso ao banco só por ORM com queries parametrizadas.
+- Disponibilidade: `/auth/token` limitado a 5/min por IP; `SECRET_KEY` ausente
+  impede a inicialização (falha segura em vez de chave padrão).

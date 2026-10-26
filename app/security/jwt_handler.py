@@ -25,12 +25,12 @@ def verify_token(token: str) -> dict:
     """Decodifica e valida um JWT, levantando 401 se inválido ou expirado."""
     try:
         return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-    except jwt.PyJWTError:
+    except jwt.PyJWTError as exc:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired token",
             headers={"WWW-Authenticate": "Bearer"},
-        )
+        ) from exc
 
 
 def get_current_user(token: str = Depends(oauth2_scheme)) -> str:

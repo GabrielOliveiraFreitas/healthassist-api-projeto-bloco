@@ -1,10 +1,15 @@
 """Fixtures compartilhadas: cliente de teste com banco SQLite em memória."""
+import os
 from typing import Generator
 
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.pool import StaticPool
 from sqlmodel import Session, SQLModel, create_engine
+
+# Chave só para testes; precisa existir antes de importar app.config.
+if len(os.environ.get("SECRET_KEY", "")) < 32:
+    os.environ["SECRET_KEY"] = "chave-somente-para-testes-0123456789abcdef"
 
 import app.main as main_module
 from app.db import get_session

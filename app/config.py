@@ -5,7 +5,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-SECRET_KEY: str = os.getenv("SECRET_KEY", "dev-secret-key-insecure")
+# Sem valor padrão: uma chave previsível permitiria forjar JWTs. A aplicação
+# recusa subir sem SECRET_KEY forte definida no ambiente (fail fast).
+_MIN_SECRET_KEY_LENGTH = 32
+SECRET_KEY: str = os.getenv("SECRET_KEY", "")
+if len(SECRET_KEY) < _MIN_SECRET_KEY_LENGTH:
+    raise RuntimeError(
+        f"SECRET_KEY ausente ou curta (mínimo {_MIN_SECRET_KEY_LENGTH} caracteres). "
+        'Gere uma com: python -c "import secrets; print(secrets.token_urlsafe(48))"'
+    )
 ALGORITHM: str = os.getenv("ALGORITHM", "HS256")
 TOKEN_EXPIRATION_HOURS: int = int(os.getenv("TOKEN_EXPIRATION_HOURS", "1"))
 DEBUG: bool = os.getenv("DEBUG", "False").lower() in ("true", "1", "yes")

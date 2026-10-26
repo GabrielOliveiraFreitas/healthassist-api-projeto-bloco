@@ -7,7 +7,7 @@ hardening OWASP Top 10 sobre a base entregue no TP1.
 ## Objetivo do Projeto
 
 Servir como backend de um sistema de atendimento/triagem médica que, ao longo do
-bloco, vai incorporar um modelo de EDA/ML para classificar sintomas e um agente de
+bloco, vai incorporar um modelo de ML (desenvolvido por outro integrante da equipe) para classificar sintomas e um agente de
 IA para interação com o usuário. Nesta fase, a API ganhou persistência real
 (SQLModel), verificação de ownership (BOLA), headers de segurança, CORS com
 allowlist e rate limiting — além de ter sido auditada com OWASP ZAP.
@@ -33,10 +33,14 @@ healthassist-api/
 │   │   └── security_headers.py # HSTS, X-Frame-Options, X-Content-Type-Options, CSP
 │   └── security/
 │       └── jwt_handler.py      # Geração/validação de JWT
-├── tests/                      # Suite pytest (segurança: BOLA, sem token, extra field)
+├── tests/                      # Suite pytest (unitários + segurança: auth, BOLA, XSS, SQLi, headers, rate limit)
+├── scripts/seed.py             # Cria usuários de teste (admin/alice/bob) e triagens de exemplo
+├── .github/workflows/security-tests.yml  # CI: pytest a cada push/PR
 ├── docs/
 │   ├── DFD.md                  # Data flow diagram + trust boundaries + CIA
-│   └── owasp-zap-findings.md   # Findings do scan OWASP ZAP e como foram tratados
+│   ├── owasp-zap-findings.md   # Findings do scan OWASP ZAP e como foram tratados
+│   ├── auditoria_final_tp3.md  # Checklist de segurança + prontidão para pentest
+│   └── planejamento_t2.md      # Pendências do pentest (adversário, escopo)
 ├── requirements.txt
 ├── requirements-dev.txt        # Dependências extras para rodar os testes
 ├── .env.example
@@ -60,8 +64,13 @@ source .venv/bin/activate      # Linux/Mac
 # 3. Instale as dependências (adicione -r requirements-dev.txt para rodar os testes)
 pip install -r requirements.txt
 
-# 4. Copie o arquivo de variáveis de ambiente
+# 4. Copie o arquivo de variáveis de ambiente e preencha SECRET_KEY
+#    (obrigatória, mínimo 32 caracteres; a API não sobe sem ela)
 cp .env.example .env
+python -c "import secrets; print(secrets.token_urlsafe(48))"   # cole em SECRET_KEY
+
+# 5. Crie o banco e os usuários de teste (defina SEED_*_PASSWORD no .env)
+python -m scripts.seed
 ```
 
 ## Execução
@@ -83,7 +92,7 @@ curl -X GET http://localhost:8000/health
 # Obter token JWT
 curl -X POST http://localhost:8000/auth/token \
   -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"senha123"}'
+  -d '{"username":"alice","password":"<SEED_ALICE_PASSWORD>"}'
 
 # Predict sem token — deve retornar 401
 curl -X POST http://localhost:8000/predict \
@@ -105,7 +114,7 @@ curl http://localhost:8000/triagens/1 \
 
 ```bash
 pip install -r requirements-dev.txt
-pytest tests/
+pytest tests/   # em outro terminal, com SECRET_KEY definida
 ```
 
 ## Segurança & Autenticação
@@ -113,10 +122,11 @@ pytest tests/
 - Autenticação via JWT (HS256), emitido em `/auth/token` e validado via
   `OAuth2PasswordBearer` (`tokenUrl="auth/token"`).
 - Token expira em 1 hora (configurável via `TOKEN_EXPIRATION_HOURS` no `.env`).
-- Usuário de exemplo (MVP, hardcoded): `admin` / `senha123`. Isso é temporário e
-  será substituído por uma base de usuários real em fase futura.
-- `SECRET_KEY` deve ser definida no `.env` — nunca commitar o `.env` real
-  (já está no `.gitignore`).
+- Usuários ficam na tabela `User` (SQLModel); a senha é guardada como hash
+  scrypt com salt, nunca em texto puro. Não há credenciais no código: os
+  usuários de teste são criados por `scripts/seed.py` com senhas do ambiente.
+- `SECRET_KEY` é obrigatória (≥ 32 caracteres) e **não tem valor padrão**: sem
+  ela a API recusa subir. Nunca commitar o `.env` real (já está no `.gitignore`).
 - **Pydantic `extra="forbid"`** em todos os schemas de entrada (`TokenRequest`,
   `PredictRequest`): qualquer campo fora do schema é rejeitado com 422, em vez
   de ser silenciosamente ignorado.
@@ -146,11 +156,39 @@ para os achados do scan OWASP ZAP e como cada um foi tratado.
 - ✅ TP1 (Fase 2): API FastAPI + JWT
 - ✅ TP2: SQLModel, BOLA, headers de segurança, CORS, rate limiting, scan ZAP e
   testes pytest de segurança (este repositório)
-- ⏳ EDA do dataset de sintomas/atendimento (por outro membro da equipe)
-- ⏳ Integração do modelo de EDA/ML na rota `/predict`
+- ✅ TP3: testes unitários e de segurança, CI/CD com gates (lint, SAST, SCA, cobertura),
+  auditoria final e planejamento do pentest
+- ⏳ Colega adversário e URL do alvo do pentest (ainda não definidos)
+- ⏳ EDA e modelo de ML (a cargo de outro integrante; entram depois e substituem o placeholder de `/predict`)
 
-## Dataset
+## CI/CD e gates de qualidade/segurança
 
-A escolha, documentação de fonte/licença e a EDA do dataset de atendimento estão
-sendo conduzidas por outro integrante da equipe e serão adicionadas em
-`data/` e `notebooks/` neste mesmo repositório.
+`.github/workflows/security-tests.yml` roda a cada push/PR. O job `gates` só
+fica verde se **todas** as etapas passarem:
+
+| Gate | Ferramenta | Falha quando |
+|---|---|---|
+| Lint | `ruff check` | erro de lint |
+| SAST | `bandit -r app -ll` | achado de severidade média/alta no código |
+| SCA | `pip-audit -r requirements.txt` | dependência com CVE conhecida |
+| Testes + cobertura | `pytest --cov=app --cov-fail-under=90` | qualquer teste falha ou cobertura < 90% |
+| DAST | OWASP ZAP API scan autenticado (`scripts/run_dast.sh`) | qualquer alerta não-informativo |
+
+Para o merge ser realmente bloqueado, ative *branch protection* no GitHub
+(Settings → Branches → Require status checks → `gates`).
+
+Rodar os gates localmente:
+
+```bash
+pip install -r requirements-dev.txt
+ruff check . && bandit -r app scripts -ll && pip-audit -r requirements.txt
+pytest tests/ -v --cov=app --cov=scripts --cov-fail-under=90
+bash scripts/run_dast.sh   # DAST autenticado com ZAP (requer docker)
+```
+
+## Teste manual com Burp Suite / ZAP desktop
+
+Suba a API com o seed (`python -m scripts.seed && uvicorn app.main:app`), aponte
+o proxy do Burp para `localhost:8000` e use `alice`/`bob` para testar BOLA
+(troque o id em `GET /triagens/{id}` com o token de outro usuário: esperado 404).
+Para o Intruder em `/auth/token`, o esperado é 429 após 5 tentativas/min por IP.

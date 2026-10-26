@@ -1,8 +1,8 @@
 """Modelos Pydantic usados pelas rotas da API."""
 from datetime import datetime
-from typing import List
+from typing import Annotated, List
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class HealthResponse(BaseModel):
@@ -15,8 +15,8 @@ class TokenRequest(BaseModel):
     # extra="forbid" (OWASP): rejeita campos não esperados no body (422).
     model_config = ConfigDict(extra="forbid")
 
-    username: str
-    password: str
+    username: str = Field(min_length=1, max_length=64, examples=["alice"])
+    password: str = Field(min_length=1, max_length=128)
 
 
 class TokenResponse(BaseModel):
@@ -28,7 +28,9 @@ class TokenResponse(BaseModel):
 class PredictRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    symptoms: List[str]
+    symptoms: List[Annotated[str, Field(min_length=1, max_length=100)]] = Field(
+        min_length=1, max_length=20, examples=[["febre", "tosse"]]
+    )
 
 
 class PredictResponse(BaseModel):
