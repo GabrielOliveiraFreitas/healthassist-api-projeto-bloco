@@ -18,7 +18,27 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="HealthAssist API", version="0.1.0")
+_DESCRIPTION = """
+API de triagem médica do projeto de bloco **HealthAssist**.
+
+**Fluxo:** `POST /auth/token` (JWT) → `POST /predict` (cria uma triagem) →
+`GET /triagens/{id}` (só o dono acessa; outro usuário recebe 404).
+
+Controles: JWT (OAuth2 Bearer), `extra="forbid"` nos bodies, ownership/BOLA,
+rate limit em `/auth/token`, headers de segurança e CORS com allowlist.
+A rota `/predict` ainda retorna um placeholder (o modelo vem no Trimestre 2).
+"""
+
+app = FastAPI(
+    title="HealthAssist API",
+    version="0.1.0",
+    description=_DESCRIPTION,
+    openapi_tags=[
+        {"name": "sistema", "description": "Health check público."},
+        {"name": "auth", "description": "Emissão de token JWT."},
+        {"name": "triagem", "description": "Rotas protegidas por JWT."},
+    ],
+)
 
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
@@ -32,10 +52,10 @@ app.add_middleware(
     allow_headers=["Authorization", "Content-Type"],
 )
 
-app.include_router(health.router, prefix="")
-app.include_router(auth.router, prefix="/auth")
-app.include_router(predict.router, prefix="")
-app.include_router(triagens.router, prefix="")
+app.include_router(health.router, prefix="", tags=["sistema"])
+app.include_router(auth.router, prefix="/auth", tags=["auth"])
+app.include_router(predict.router, prefix="", tags=["triagem"])
+app.include_router(triagens.router, prefix="", tags=["triagem"])
 
 
 @app.on_event("startup")
