@@ -1,0 +1,55 @@
+# Evidência de execuções do CI — workflow security-tests
+# Coletado em: 2026-11-26T16:03:19Z
+# gh account: GabrielOliveiraFreitas (autenticado)
+
+## gh run list --limit 10
+completed	success	security-tests	security-tests	main	schedule	45228474767	1m49s	2026-11-23T17:30:49Z
+completed	success	security-tests	security-tests	main	schedule	43891281825	1m55s	2026-11-16T14:57:37Z
+completed	success	security-tests	security-tests	main	schedule	42644148580	1m51s	2026-11-09T15:23:17Z
+completed	success	security-tests	security-tests	main	schedule	41466349952	2m11s	2026-11-02T14:54:09Z
+completed	failure	Adiciona EDA, regressao, documentos de classificacao e planejamento	security-tests	parte-dados-tp3	push	40809073333	31s	2026-10-29T02:54:12Z
+completed	success	feat(tp3): hardening, testes de segurança e CI/CD com gates	security-tests	tp3-seguranca-ci	push	40379400270	1m47s	2026-10-26T18:37:43Z
+completed	success	Merge branch 'tp3-seguranca-ci' into main	security-tests	main	push	40379398321	1m41s	2026-10-26T18:37:43Z
+
+## Última execução em main (jobs/gates):
+run id = 45228474767
+
+✓ main security-tests · 45228474767
+Triggered via schedule about 2 days ago
+
+JOBS
+✓ Gate: dependências vulneráveis (pip-audit) in 27s (ID 137881275549)
+✓ Gate: lint (ruff) in 18s (ID 137881276210)
+✓ Gate: SAST (bandit) in 17s (ID 137881276236)
+✓ Gate: testes + cobertura >= 90% in 19s (ID 137881276243)
+✓ Gate: DAST (OWASP ZAP autenticado) in 1m11s (ID 137881593507)
+✓ gates in 3s (ID 137882363695)
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Gate: dependências vulneráveis (pip-audit): .github#2
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Gate: lint (ruff): .github#2
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Gate: SAST (bandit): .github#2
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Gate: SAST (bandit): .github#2
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Gate: testes + cobertura >= 90%: .github#2
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Gate: testes + cobertura >= 90%: .github#2
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Gate: DAST (OWASP ZAP autenticado): .github#2
+
+
+ARTIFACTS
+zap-report
+
+For more information about a job, try: gh run view --job=<job-id>
+View this run on GitHub: https://github.com/GabrielOliveiraFreitas/healthassist-api-projeto-bloco/actions/runs/45228474767
