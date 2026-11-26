@@ -11,7 +11,7 @@ from app.config import CORS_ORIGINS
 from app.db import init_db
 from app.middleware.security_headers import SecurityHeadersMiddleware
 from app.rate_limit import limiter
-from app.routes import auth, health, predict, triagens
+from app.routes import auth, classify, health, predict, triagens
 
 load_dotenv()
 
@@ -55,6 +55,7 @@ app.add_middleware(
 app.include_router(health.router, prefix="", tags=["sistema"])
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(predict.router, prefix="", tags=["triagem"])
+app.include_router(classify.router, prefix="", tags=["triagem"])
 app.include_router(triagens.router, prefix="", tags=["triagem"])
 
 

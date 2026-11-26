@@ -16,3 +16,6 @@ wheels/
 *.db
 zap-out/
 .coverage
+
+# PDF de entrega (artefato gerado; enviar pelo site, não versionar)
+*_PB_TP4.pdf

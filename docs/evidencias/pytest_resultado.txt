@@ -1,0 +1,78 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.6.0 -- /home/gabriel/Área de trabalho/Area de trabalho/Faculdade Engenharia S./Analise e Seguranca de Agentes de IA/Projeto-de-bloco/healthassist-api/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/gabriel/Área de trabalho/Area de trabalho/Faculdade Engenharia S./Analise e Seguranca de Agentes de IA/Projeto-de-bloco/healthassist-api
+configfile: pyproject.toml
+plugins: platformdirs-4.13.5, cov-7.1.0, anyio-4.15.1
+collecting ... collected 62 items
+
+tests/test_security.py::test_predict_sem_token_retorna_401 PASSED        [  1%]
+tests/test_security.py::test_token_expirado_e_rejeitado PASSED           [  3%]
+tests/test_security.py::test_token_com_assinatura_invalida_e_rejeitado PASSED [  4%]
+tests/test_security.py::test_token_alg_none_e_rejeitado PASSED           [  6%]
+tests/test_security.py::test_login_valido_e_invalido PASSED              [  8%]
+tests/test_security.py::test_senha_nao_e_armazenada_em_texto_puro PASSED [  9%]
+tests/test_security.py::test_bola_nao_acessa_triagem_de_outro_usuario PASSED [ 11%]
+tests/test_security.py::test_triagens_sem_token_retorna_401 PASSED       [ 12%]
+tests/test_security.py::test_campo_extra_no_body_e_rejeitado PASSED      [ 14%]
+tests/test_security.py::test_predict_valida_formato_e_tamanho[corpo0] PASSED [ 16%]
+tests/test_security.py::test_predict_valida_formato_e_tamanho[corpo1] PASSED [ 17%]
+tests/test_security.py::test_predict_valida_formato_e_tamanho[corpo2] PASSED [ 19%]
+tests/test_security.py::test_predict_valida_formato_e_tamanho[corpo3] PASSED [ 20%]
+tests/test_security.py::test_predict_valida_formato_e_tamanho[corpo4] PASSED [ 22%]
+tests/test_security.py::test_predict_valida_formato_e_tamanho[corpo5] PASSED [ 24%]
+tests/test_security.py::test_predict_valida_formato_e_tamanho[corpo6] PASSED [ 25%]
+tests/test_security.py::test_predict_com_payload_de_sql_injection_e_tratado_como_dado PASSED [ 27%]
+tests/test_security.py::test_login_rejeita_campo_extra PASSED            [ 29%]
+tests/test_security.py::test_headers_de_seguranca_presentes PASSED       [ 30%]
+tests/test_security.py::test_cors_nao_libera_origem_fora_da_allowlist PASSED [ 32%]
+tests/test_security.py::test_rate_limit_em_auth_token PASSED             [ 33%]
+tests/test_unit.py::test_create_e_verify_token_roundtrip PASSED          [ 35%]
+tests/test_unit.py::test_token_tem_expiracao_padrao_de_uma_hora PASSED   [ 37%]
+tests/test_unit.py::test_verify_token_lixo_levanta_401 PASSED            [ 38%]
+tests/test_unit.py::test_get_current_user_sem_sub_levanta_401 PASSED     [ 40%]
+tests/test_unit.py::test_token_expirado_levanta_401 PASSED               [ 41%]
+tests/test_unit.py::test_verify_password_rejeita_hash_malformado PASSED  [ 43%]
+tests/test_unit.py::test_hashes_diferentes_para_mesma_senha PASSED       [ 45%]
+tests/test_unit.py::test_config_recusa_secret_key_ausente_ou_curta PASSED [ 46%]
+tests/test_unit.py::test_cors_origins_nunca_e_wildcard PASSED            [ 48%]
+tests/test_unit.py::test_health_responde_sem_autenticacao PASSED         [ 50%]
+tests/test_unit.py::test_predict_persiste_triagem_do_usuario PASSED      [ 51%]
+tests/test_unit.py::test_metodo_nao_permitido_retorna_405 PASSED         [ 53%]
+tests/test_unit.py::test_seed_cria_usuarios_com_hash_e_e_idempotente PASSED [ 54%]
+tests/test_unit.py::test_seed_falha_sem_senhas PASSED                    [ 56%]
+tests/test_web_attacks.py::test_xss_armazenado_e_devolvido_como_json_inerte[<script>alert(1)</script>] PASSED [ 58%]
+tests/test_web_attacks.py::test_xss_armazenado_e_devolvido_como_json_inerte[<img src=x onerror=alert(1)>] PASSED [ 59%]
+tests/test_web_attacks.py::test_xss_armazenado_e_devolvido_como_json_inerte["><svg/onload=alert(1)>] PASSED [ 61%]
+tests/test_web_attacks.py::test_xss_armazenado_e_devolvido_como_json_inerte[javascript:alert(1)] PASSED [ 62%]
+tests/test_web_attacks.py::test_xss_refletido_em_url_e_erros_nao_vira_html[<script>alert(1)</script>] PASSED [ 64%]
+tests/test_web_attacks.py::test_xss_refletido_em_url_e_erros_nao_vira_html[<img src=x onerror=alert(1)>] PASSED [ 66%]
+tests/test_web_attacks.py::test_xss_refletido_em_url_e_erros_nao_vira_html["><svg/onload=alert(1)>] PASSED [ 67%]
+tests/test_web_attacks.py::test_xss_refletido_em_url_e_erros_nao_vira_html[javascript:alert(1)] PASSED [ 69%]
+tests/test_web_attacks.py::test_sqli_no_login_nao_autentica[' OR '1'='1] PASSED [ 70%]
+tests/test_web_attacks.py::test_sqli_no_login_nao_autentica['; DROP TABLE user; --] PASSED [ 72%]
+tests/test_web_attacks.py::test_sqli_no_login_nao_autentica[admin'--] PASSED [ 74%]
+tests/test_web_attacks.py::test_sqli_no_login_nao_autentica[" OR ""="] PASSED [ 75%]
+tests/test_web_attacks.py::test_sqli_no_login_nao_autentica[1; SELECT * FROM user] PASSED [ 77%]
+tests/test_web_attacks.py::test_id_malicioso_em_triagens_nao_vaza_dados[1 OR 1=1] PASSED [ 79%]
+tests/test_web_attacks.py::test_id_malicioso_em_triagens_nao_vaza_dados[1;DROP TABLE triagem] PASSED [ 80%]
+tests/test_web_attacks.py::test_id_malicioso_em_triagens_nao_vaza_dados[-1] PASSED [ 82%]
+tests/test_web_attacks.py::test_id_malicioso_em_triagens_nao_vaza_dados[abc] PASSED [ 83%]
+tests/test_web_attacks.py::test_id_malicioso_em_triagens_nao_vaza_dados[1.5] PASSED [ 85%]
+tests/test_web_attacks.py::test_bola_por_enumeracao_de_ids_nunca_retorna_dados_alheios PASSED [ 87%]
+tests/test_web_attacks.py::test_mass_assignment_owner_no_predict_e_rejeitado PASSED [ 88%]
+tests/test_web_attacks.py::test_resposta_de_erro_nao_vaza_stack_trace_nem_segredo PASSED [ 90%]
+tests/test_web_attacks.py::test_cors_preflight_de_origem_maliciosa_nao_e_liberado PASSED [ 91%]
+tests/test_web_attacks.py::test_cors_origem_permitida_recebe_header PASSED [ 93%]
+tests/test_web_attacks.py::test_headers_de_seguranca_em_respostas_de_erro PASSED [ 95%]
+tests/test_web_attacks.py::test_nao_expoe_header_server_com_versao_de_framework PASSED [ 96%]
+tests/test_web_attacks.py::test_rate_limit_nao_e_burlado_trocando_username PASSED [ 98%]
+tests/test_web_attacks.py::test_login_nao_enumera_usuarios_por_mensagem PASSED [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /home/gabriel/Área de trabalho/Area de trabalho/Faculdade Engenharia S./Analise e Seguranca de Agentes de IA/Projeto-de-bloco/healthassist-api/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 62 passed, 1 warning in 2.63s =========================

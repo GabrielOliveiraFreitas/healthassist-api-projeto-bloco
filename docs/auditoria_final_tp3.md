@@ -27,6 +27,38 @@ Evidências de autorização/BOLA vêm dos testes autenticados (`pytest tests/ -
 | 15c | XSS | ✅ Resolvido | API só serve JSON (`nosniff`, CSP `default-src 'none'`); testes de XSS armazenado e refletido; ZAP: regras de XSS em PASS. |
 | 16 | Bloquear merge se o CI falhar | ⚠️ Ação manual | Exige *branch protection* no GitHub (Settings → Branches → Require status checks → `gates`); não é configurável por arquivo no repositório. |
 
+## Checklist final OWASP ZAP (por finding)
+
+Mapeamento de **cada** finding reportado pelo ZAP a sua severidade, status de
+tratamento e evidência concreta (arquivo:linha ou header). Fontes:
+[`owasp-zap-findings.md`](owasp-zap-findings.md) (1ª execução, sem JWT) e o
+re-scan autenticado (`docs/zap-report.html`). O resumo oficial do relatório
+re-scan é **High: 0 · Medium: 0 · Low: 0 · Informational: 4 · False Positives: 0**
+(tabela "Summary of Alerts" de `zap-report.html`).
+
+| # | Finding (ID ZAP) | Severidade | Status | Evidência da correção / justificativa |
+|---|---|---|---|---|
+| Z1 | Cross-Origin-Resource-Policy Header Missing or Invalid [90004] | **Low** | ✅ Resolvido | Header `Cross-Origin-Resource-Policy: same-origin` adicionado em `app/middleware/security_headers.py:29`; teste `tests/test_web_attacks.py::test_headers_de_seguranca_em_respostas_de_erro`; re-scan: `WARN-NEW: 0`. |
+| Z2 | A Client Error response code was returned by the server | Informational | ⚠️ Aceito | Esperado: 401/404 são as respostas corretas ao fuzzing de path/sem auth do ZAP. Não é vulnerabilidade. |
+| Z3 | Authentication Request Identified (`POST /auth/token`) | Informational | ⚠️ Aceito | Apenas identifica a rota de login; comportamento normal. |
+| Z4 | Non-Storable Content (`/predict`, `/auth/token`, `/triagens/{id}`) | Informational | ⚠️ Aceito (desejado) | Correto: dado de saúde/token não deve ser cacheável. |
+| Z5 | Storable and Cacheable Content (`/health`, `/openapi.json`) | Informational | ⚠️ Aceito | Nenhuma das rotas expõe dado sensível/por usuário. |
+
+**Resumo por severidade (findings acionáveis):**
+
+| Severidade | Qtd. total | Resolvidos | Aceitos c/ justificativa | Pendentes |
+|---|---|---|---|---|
+| High | 0 | 0 | 0 | **0** |
+| Medium | 0 | 0 | 0 | **0** |
+| Low | 1 (Z1) | 1 | 0 | **0** |
+| Informational | 4 (Z2–Z5) | — | 4 | **0** |
+
+**Conclusão:** nenhum finding Medium ou High foi detectado em nenhuma das
+execuções do ZAP. O único finding acionável (Z1, severidade Low) foi corrigido
+com evidência no código e confirmado por re-scan. Os 4 itens Informational são
+comportamento correto da API e estão formalmente aceitos como risco. Não há
+findings pendentes.
+
 ## Pronto como alvo de pentest
 
 Verificado localmente em 26/10/2026 (uvicorn real + SQLite + seed):

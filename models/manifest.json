@@ -1,0 +1,31 @@
+{
+  "version": "healthassist-intents-tp4-v1",
+  "sha256": "2a53a92513ca6bfc0b21a23a5037f0b589dbfc65eecb0d9dd01969e88af67ec7",
+  "sklearn_version": "1.9.1",
+  "classes": [
+    "Anatomia e fisiologia",
+    "Diagnóstico",
+    "Epidemiologia",
+    "Escolha de profissionais de saúde",
+    "Estilo de vida saudável",
+    "Outros",
+    "Tratamento"
+  ],
+  "best_params": {
+    "tfidf__ngram_range": [
+      1,
+      1
+    ],
+    "tfidf__min_df": 3,
+    "clf__C": 1.0
+  },
+  "metrics": {
+    "f1_macro": 0.5185,
+    "accuracy": 0.7233,
+    "baseline_f1_macro": 0.0846,
+    "baseline_accuracy": 0.4209
+  },
+  "n_train": 3793,
+  "n_test": 1207,
+  "language": "pt"
+}
