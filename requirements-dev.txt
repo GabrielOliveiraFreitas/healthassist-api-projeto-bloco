@@ -6,3 +6,5 @@ httpx==0.28.1
 ruff==0.17.2
 bandit==1.9.4
 pip-audit==2.10.1
+# Agente autônomo (TP4) - demo via OpenAI Agents SDK
+openai-agents==0.25.0

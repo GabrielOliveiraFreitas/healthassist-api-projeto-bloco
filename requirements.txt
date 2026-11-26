@@ -9,3 +9,5 @@ python-dotenv==1.2.4
 sqlmodel==0.0.48
 sqlalchemy==2.1.6
 slowapi==0.1.10
+scikit-learn==1.9.1
+joblib==1.6.0

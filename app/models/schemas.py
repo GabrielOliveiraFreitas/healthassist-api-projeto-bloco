@@ -40,6 +40,23 @@ class PredictResponse(BaseModel):
     recommendation: str
 
 
+class ClassifyRequest(BaseModel):
+    # extra="forbid" (OWASP): rejeita campos não esperados no body (422).
+    model_config = ConfigDict(extra="forbid")
+
+    text: str = Field(
+        min_length=1,
+        max_length=4000,
+        examples=["Como encontrar o melhor especialista para dupuytren na minha cidade?"],
+    )
+
+
+class ClassifyResponse(BaseModel):
+    intent: str
+    probability: float = Field(ge=0.0, le=1.0)
+    model_version: str
+
+
 class TriagemResponse(BaseModel):
     id: int
     owner: str
