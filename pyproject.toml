@@ -23,7 +23,7 @@ dev = [
 
 [tool.ruff]
 line-length = 110
-exclude = [".venv", "docs"]
+exclude = [".venv", "docs", "eda", "pentest"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "S"]
@@ -36,3 +36,6 @@ ignore = ["B008"]  # Depends() em defaults é o idioma do FastAPI
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.coverage.run]
+omit = ["scripts/agent_triagem.py"]
